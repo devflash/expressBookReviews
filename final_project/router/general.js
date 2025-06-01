@@ -25,36 +25,61 @@ public_users.post("/register", (req, res) => {
 });
 
 // Get the book list available in the shop
-public_users.get("/", function (req, res) {
+public_users.get("/", async function (req, res) {
+  const getBookList = () => {
+    return new Promise((resolve) => {
+      resolve(books);
+    });
+  };
+  const response = await getBookList();
   //Write your code here
-  return res.status(200).json(books);
+  return res.status(200).json(response);
 });
 
 // Get book details based on ISBN
-public_users.get("/isbn/:isbn", function (req, res) {
+public_users.get("/isbn/:isbn", async function (req, res) {
   //Write your code here
+  const getBookByISBN = (isbn) => {
+    return new Promise((resolve) => {
+      const book = books[isbn];
+      resolve(book);
+    });
+  };
   const isbn = req.params.isbn;
-  const book = books[isbn];
+  const book = await getBookByISBN(isbn);
 
   return res.status(200).json(book);
 });
 
 // Get book details based on author
-public_users.get("/author/:author", function (req, res) {
+public_users.get("/author/:author", async function (req, res) {
   //Write your code here
+  const getBookByAuthor = (author) => {
+    return new Promise((resolve) => {
+      const booksData = Object.values(books);
+      const authorBooks = booksData.filter((book) => book.author === author);
+      resolve(authorBooks);
+    });
+  };
+
   const author = req.params.author;
-  const booksData = Object.values(books);
-  const authors = booksData.filter((book) => book.author === author);
-  return res.status(200).json(authors);
+  const response = await getBookByAuthor(author);
+  return res.status(200).json(response);
 });
 
 // Get all books based on title
-public_users.get("/title/:title", function (req, res) {
+public_users.get("/title/:title", async function (req, res) {
   //Write your code here
+  const getBookByTitle = (title) => {
+    return new Promise((resolve) => {
+      const booksData = Object.values(books);
+      const authorBooks = booksData.filter((book) => book.title === title);
+      resolve(authorBooks);
+    });
+  };
   const title = req.params.title;
-  const booksData = Object.values(books);
-  const booksWithTitle = booksData.filter((book) => book.title === title);
-  return res.status(200).json(booksWithTitle);
+  const response = await getBookByTitle(title);
+  return res.status(200).json(response);
 });
 
 //  Get book review
